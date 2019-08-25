@@ -10,21 +10,32 @@
 (require "include.rkt")
 
 ;; contains simple dictionary definition
-(require "test-dictionary.rkt")
+(require "dictionary.rkt")
 
 ;; -----------------------------------------------------
 ;; HELPER FUNCTIONS
-
 ;; *** CODE FOR ANY HELPER FUNCTION GOES HERE ***
-
+(define isCorrect?
+  (lambda (wordvec dictvec)
+    (cond ((and (null? wordvec) (null? dictvec)) '#t)
+          ((and (member (car (car wordvec)) (car dictvec)) (isCorrect? (cdr wordvec) (cdr dictvec))) '#t)
+          (else '#f))
+    )
+  )
 
 ;; -----------------------------------------------------
 ;; KEY FUNCTION
 
 (define key
   (lambda (w)
-     'SOME_CODE_GOES_HERE ;; *** FUNCTION BODY IS MISSING ***
-))
+    ;'SOME_CODE_GOES_HERE ;; *** FUNCTION BODY IS MISSING ***
+    (if
+     (null? w)
+     5413
+     (reduce + (list (ctv(car w)) (reduce * (list 29 (key (cdr w)))1))0)
+     )
+    )
+  )
 
 ;; -----------------------------------------------------
 ;; EXAMPLE KEY VALUES
@@ -38,8 +49,12 @@
 ;; value of parameter "size" should be a prime number
 (define gen-hash-division-method
   (lambda (size) ;; range of values: 0..size-1
-     'SOME_CODE_GOES_HERE ;; *** FUNCTION BODY IS MISSING ***
-))
+    ;;;  ;'SOME_CODE_GOES_HERE ;; *** FUNCTION BODY IS MISSING ***
+    (lambda (w)
+      (modulo (key w) size)
+      )
+    )
+  )
 
 ;; value of parameter "size" is not critical
 ;; Note: hash functions may return integer values in "real"
@@ -47,13 +62,18 @@
 
 (define gen-hash-multiplication-method
   (lambda (size) ;; range of values: 0..size-1
-     'SOME_CODE_GOES_HERE ;; *** FUNCTION BODY IS MISSING ***
-))
+    ;;;;;  'SOME_CODE_GOES_HERE ;; *** FUNCTION BODY IS MISSING ***
+    (lambda (w)
+      (floor (reduce * (list (- (reduce * (list (key w) A)1) (floor (reduce * (list (key w) A)1))) size)1))
+      )
+    )
+  )
 
 
 ;; -----------------------------------------------------
 ;; EXAMPLE HASH FUNCTIONS AND HASH FUNCTION LISTS
 
+#|
 (define hash-1 (gen-hash-division-method 70111))
 (define hash-2 (gen-hash-division-method 89989))
 (define hash-3 (gen-hash-multiplication-method 700426))
@@ -62,6 +82,7 @@
 (define hashfl-1 (list hash-1 hash-2 hash-3 hash-4))
 (define hashfl-2 (list hash-1 hash-3))
 (define hashfl-3 (list hash-2 hash-3))
+|#
 
 ;; -----------------------------------------------------
 ;; EXAMPLE HASH VALUES
@@ -88,15 +109,29 @@
 
 (define gen-checker
   (lambda (hashfunctionlist dict)
-     'SOME_CODE_GOES_HERE ;; *** FUNCTION BODY IS MISSING ***
-))
+    ;'SOME_CODE_GOES_HERE ;; *** FUNCTION BODY IS MISSING ***
+    (let (
+          (vec (map (lambda (l) (map l dict)) hashfunctionlist))
+          )
+      (lambda(word)
+        (let (
+              (wordvec (map (lambda (m) (map m (list word))) hashfunctionlist))
+              )
+          (isCorrect? wordvec vec)
+          )
+        )
+      )
+    )
+  )
 
 ;; -----------------------------------------------------
 ;; EXAMPLE SPELL CHECKERS
 
+#|
 (define checker-1 (gen-checker hashfl-1 dictionary))
 (define checker-2 (gen-checker hashfl-2 dictionary))
 (define checker-3 (gen-checker hashfl-3 dictionary))
+|#
 
 ;; EXAMPLE APPLICATIONS OF A SPELL CHECKER
 ;;
